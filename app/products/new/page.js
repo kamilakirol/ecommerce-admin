@@ -12,6 +12,7 @@ export default function newproduct() {
     e.preventDefault();
     const data = { title, description, price };
     await axios.post("/api/products", data);
+    console.log(data);
   }
 
   return (
