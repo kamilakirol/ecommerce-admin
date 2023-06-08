@@ -2,17 +2,22 @@
 
 import { useState } from "react";
 import axios from "axios";
+import { redirect } from "next/navigation";
 
 export default function newproduct() {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [price, setPrice] = useState("");
+  const [goToProduct, setGoToProduct] = useState(false);
 
   async function createProduct(e) {
     e.preventDefault();
     const data = { title, description, price };
     await axios.post("/api/products", data);
-    console.log(data);
+    setGoToProduct(true);
+  }
+  if (goToProduct) {
+    return redirect("/products");
   }
 
   return (
