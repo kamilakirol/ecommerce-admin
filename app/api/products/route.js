@@ -17,6 +17,33 @@ export async function POST(req) {
 
 export async function GET(req) {
   await mongooseConnect();
-  const productDoc = await Product.find();
-  return NextResponse.json(productDoc);
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (id) {
+    const product = await Product.findOne({ _id: id });
+    return NextResponse.json(product);
+  } else {
+    const productDoc = await Product.find();
+    return NextResponse.json(productDoc);
+  }
+}
+
+export async function PUT(req) {
+  await mongooseConnect();
+  const body = await req.json();
+  const { title, description, price, _id } = body;
+  await Product.updateOne({ _id }, { title, description, price });
+  return NextResponse.json(true);
+}
+
+export async function DELETE(req) {
+  await mongooseConnect();
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+
+  if (id) {
+    const product = await Product.deleteOne({ _id: id });
+    return NextResponse.json(true);
+  }
 }
