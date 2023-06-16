@@ -5,11 +5,12 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { title, description, price } = body;
+  const { title, description, price, images } = body;
   const productDoc = await Product.create({
     title,
     description,
     price,
+    images,
   });
 
   return NextResponse.json(productDoc);
@@ -32,8 +33,8 @@ export async function GET(req) {
 export async function PUT(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { title, description, price, _id } = body;
-  await Product.updateOne({ _id }, { title, description, price });
+  const { title, description, price, images, _id } = body;
+  await Product.updateOne({ _id }, { title, description, price, images });
   return NextResponse.json(true);
 }
 
