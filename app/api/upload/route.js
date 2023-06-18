@@ -1,9 +1,6 @@
-// import { mongooseConnect } from "@/lib/mongoose";
-// import { Product } from "@/models/Product";
 import { NextResponse } from "next/server";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 const bucketName = "kamila-next-ecommerce";
-import fs from "fs";
 import mime from "mime-types";
 
 export async function POST(req) {
