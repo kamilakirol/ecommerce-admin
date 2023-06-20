@@ -9,6 +9,7 @@ export default function Categories() {
   const [editedCategory, setEditedCategory] = useState(null);
   const [parentCategory, setParentCategory] = useState("");
   const [categories, setCategories] = useState([]);
+  const [properties, setProperties] = useState([]);
 
   useEffect(() => {
     fetchCategories();
@@ -62,6 +63,36 @@ export default function Categories() {
     });
   }
 
+  function addProperty() {
+    setProperties((prev) => {
+      return [...prev, { name: "", values: "" }];
+    });
+  }
+
+  function handlePropertyNameChange(index, property, newName) {
+    setProperties((prev) => {
+      const properties = [...prev];
+      properties[index].name = newName;
+      return properties;
+    });
+  }
+
+  function handlePropertyValuesChange(index, property, newValues) {
+    setProperties((prev) => {
+      const properties = [...prev];
+      properties[index].values = newValues;
+      return properties;
+    });
+  }
+
+  function removeProperty(indexToRemove) {
+    setProperties((prev) => {
+      return [...prev].filter((p, pIndex) => {
+        return pIndex !== indexToRemove;
+      });
+    });
+  }
+
   return (
     <>
       <h1>Categories</h1>
@@ -71,27 +102,68 @@ export default function Categories() {
           : "Create new category "}
       </label>
 
-      <form onSubmit={saveCategory} className="flex gap-1">
-        <input
-          value={name}
-          onChange={(e) => setName(e.target.value)}
-          type="text"
-          placeholder={"Category name"}
-          className="my-0"
-        />
-        <select
-          value={parentCategory}
-          onChange={(e) => setParentCategory(e.target.value)}
-          className="my-0"
-        >
-          <option value="">No parent category</option>
-          {categories.length > 0 &&
-            categories.map((category) => (
-              <option key={category._id} value={category._id}>
-                {category.name}
-              </option>
+      <form onSubmit={saveCategory}>
+        <div className="flex gap-1">
+          <input
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            type="text"
+            placeholder={"Category name"}
+          />
+          <select
+            value={parentCategory}
+            onChange={(e) => setParentCategory(e.target.value)}
+          >
+            <option value="">No parent category</option>
+            {categories.length > 0 &&
+              categories.map((category) => (
+                <option key={category._id} value={category._id}>
+                  {category.name}
+                </option>
+              ))}
+          </select>
+        </div>
+
+        <div className="mb-2">
+          <label className="block">Properties</label>
+          <button
+            className="btn-default text-sm mb-2"
+            type="button"
+            onClick={addProperty}
+          >
+            Add new property
+          </button>
+          {properties.length > 0 &&
+            properties.map((property, index) => (
+              <div className="flex gap-1 mb-2" key={index}>
+                <input
+                  type="text"
+                  value={property.name}
+                  onChange={(e) =>
+                    handlePropertyNameChange(index, property, e.target.value)
+                  }
+                  className="my-0"
+                  placeholder="property name (example: color)"
+                />
+                <input
+                  type="text"
+                  value={property.values}
+                  onChange={(e) =>
+                    handlePropertyValuesChange(index, property, e.target.value)
+                  }
+                  className="my-0"
+                  placeholder="property values (example: red)"
+                />
+                <button
+                  onClick={() => removeProperty(index)}
+                  type="button"
+                  className="btn-default"
+                >
+                  Remove
+                </button>
+              </div>
             ))}
-        </select>
+        </div>
         <button type="submit" className="btn-primary py-1">
           Save
         </button>
