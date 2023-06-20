@@ -5,12 +5,13 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { title, description, price, images } = body;
+  const { title, description, price, images, category } = body;
   const productDoc = await Product.create({
     title,
     description,
     price,
     images,
+    category,
   });
 
   return NextResponse.json(productDoc);
@@ -33,8 +34,11 @@ export async function GET(req) {
 export async function PUT(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { title, description, price, images, _id } = body;
-  await Product.updateOne({ _id }, { title, description, price, images });
+  const { title, description, price, images, category, _id } = body;
+  await Product.updateOne(
+    { _id },
+    { title, description, price, images, category }
+  );
   return NextResponse.json(true);
 }
 
@@ -44,7 +48,7 @@ export async function DELETE(req) {
   const id = searchParams.get("id");
 
   if (id) {
-    const product = await Product.deleteOne({ _id: id });
+    await Product.deleteOne({ _id: id });
     return NextResponse.json(true);
   }
 }

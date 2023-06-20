@@ -27,3 +27,14 @@ export async function PUT(req) {
   await Category.updateOne({ _id }, { name, parentCategory });
   return NextResponse.json(true);
 }
+
+export async function DELETE(req) {
+  await mongooseConnect();
+  const { searchParams } = new URL(req.url);
+  const _id = searchParams.get("_id");
+
+  if (_id) {
+    await Category.deleteOne({ _id: _id });
+    return NextResponse.json(true);
+  }
+}

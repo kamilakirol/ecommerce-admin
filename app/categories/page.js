@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import axios from "axios";
+import Swal from "sweetalert2";
 
 export default function Categories() {
   const [name, setName] = useState("");
@@ -16,6 +17,7 @@ export default function Categories() {
   function fetchCategories() {
     axios.get("/api/categories").then((result) => {
       setCategories(result.data);
+      setParentCategory("");
     });
   }
 
@@ -38,6 +40,26 @@ export default function Categories() {
     setEditedCategory(category);
     setName(category.name);
     setParentCategory(category.parentCategory?._id);
+  }
+
+  function deleteCategory(category) {
+    Swal.fire({
+      title: "Are you sure?",
+      text: `Do you want to delete ${category.name}`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#626B76",
+      confirmButtonText: "Yes, delete!",
+      reverseButtons: true,
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        const { _id } = category;
+        await axios.delete("/api/categories?_id=" + _id);
+        // Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        fetchCategories();
+      }
+    });
   }
 
   return (
@@ -65,7 +87,9 @@ export default function Categories() {
           <option value="">No parent category</option>
           {categories.length > 0 &&
             categories.map((category) => (
-              <option value={category._id}>{category.name}</option>
+              <option key={category._id} value={category._id}>
+                {category.name}
+              </option>
             ))}
         </select>
         <button type="submit" className="btn-primary py-1">
@@ -84,7 +108,7 @@ export default function Categories() {
         <tbody>
           {categories.length > 0 &&
             categories.map((category) => (
-              <tr>
+              <tr key={category._id}>
                 <td>{category.name}</td>
                 <td>{category?.parentCategory?.name}</td>
                 <td>
@@ -94,7 +118,12 @@ export default function Categories() {
                   >
                     Edit
                   </button>
-                  <button className="btn-primary">Delete</button>
+                  <button
+                    onClick={() => deleteCategory(category)}
+                    className="btn-primary"
+                  >
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
