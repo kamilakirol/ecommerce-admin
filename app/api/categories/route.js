@@ -5,10 +5,11 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { name, parentCategory } = body;
+  const { name, parentCategory, properties } = body;
   const categoryDoc = await Category.create({
     name,
-    parentCategory,
+    parentCategory: parentCategory || undefined,
+    properties,
   });
 
   return NextResponse.json(categoryDoc);
@@ -23,8 +24,15 @@ export async function GET(req) {
 export async function PUT(req) {
   await mongooseConnect();
   const body = await req.json();
-  const { name, parentCategory, _id } = body;
-  await Category.updateOne({ _id }, { name, parentCategory });
+  const { name, parentCategory, properties, _id } = body;
+  await Category.updateOne(
+    { _id },
+    {
+      name,
+      parentCategory: parentCategory || undefined,
+      properties,
+    }
+  );
   return NextResponse.json(true);
 }
 
