@@ -124,7 +124,7 @@ const ProductForm = ({
 
         {propertiesToFill.length > 0 &&
           propertiesToFill.map((p) => (
-            <div className="flex gap-1">
+            <div className="flex gap-1 items-center" key={p.name}>
               <div>{p.name}</div>
               <select
                 value={productProperties[p.name]}

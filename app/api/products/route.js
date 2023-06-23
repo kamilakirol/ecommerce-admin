@@ -1,9 +1,11 @@
 import { mongooseConnect } from "@/lib/mongoose";
 import { Product } from "@/models/Product";
 import { NextResponse } from "next/server";
+import { isAdminRequest } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
   await mongooseConnect();
+  await isAdminRequest();
   const body = await req.json();
   const { title, description, price, images, category, productProperties } =
     body;
@@ -21,6 +23,7 @@ export async function POST(req) {
 
 export async function GET(req) {
   await mongooseConnect();
+  await isAdminRequest();
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 
@@ -35,6 +38,7 @@ export async function GET(req) {
 
 export async function PUT(req) {
   await mongooseConnect();
+  await isAdminRequest();
   const body = await req.json();
   const {
     title,
@@ -54,6 +58,7 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
   await mongooseConnect();
+  await isAdminRequest();
   const { searchParams } = new URL(req.url);
   const id = searchParams.get("id");
 

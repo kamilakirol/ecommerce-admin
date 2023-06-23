@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import { PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 const bucketName = "kamila-next-ecommerce";
 import mime from "mime-types";
+import { mongooseConnect } from "@/lib/mongoose";
+import { isAdminRequest } from "../auth/[...nextauth]/route";
 
 export async function POST(req) {
+  await mongooseConnect();
+  await isAdminRequest();
+
   const form = await req.formData();
   const files = form.getAll("files");
 
